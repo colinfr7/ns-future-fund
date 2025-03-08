@@ -12,6 +12,11 @@ export interface Project {
   raised: number;
   daysLeft: number;
   supporters: number;
+  revenueModel?: {
+    type: 'usage' | 'subscription' | 'onetime';
+    estimatedROI?: number;
+    payoutFrequency?: 'monthly' | 'quarterly' | 'annually';
+  };
 }
 
 interface ProjectCardProps {
@@ -61,6 +66,17 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
             <span className="font-medium">${project.raised.toLocaleString()}</span>
             <span className="text-muted-foreground">${project.target.toLocaleString()} target</span>
           </div>
+          
+          {project.revenueModel && (
+            <div className="flex justify-between pt-3 border-t border-border text-sm">
+              <span className="text-emerald-600 font-medium">
+                Est. ROI: {project.revenueModel.estimatedROI}%
+              </span>
+              <span className="text-muted-foreground">
+                {project.revenueModel.payoutFrequency} payouts
+              </span>
+            </div>
+          )}
           
           <div className="flex justify-between pt-3 border-t border-border text-sm">
             <span className="text-muted-foreground">

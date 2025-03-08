@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { Search, Filter, ArrowDownAZ } from 'lucide-react';
+import { Search, Filter, ArrowDownAZ, DollarSign } from 'lucide-react';
 import Navbar from '@/components/ui/navbar';
 import Footer from '@/components/ui/footer';
 import ProjectCard, { Project } from '@/components/ui/project-card';
@@ -15,7 +15,12 @@ const projects: Project[] = [
     target: 25000,
     raised: 18750,
     daysLeft: 15,
-    supporters: 143
+    supporters: 143,
+    revenueModel: {
+      type: 'usage',
+      estimatedROI: 8.5,
+      payoutFrequency: 'quarterly'
+    }
   },
   {
     id: '2',
@@ -26,7 +31,12 @@ const projects: Project[] = [
     target: 10000,
     raised: 8350,
     daysLeft: 7,
-    supporters: 96
+    supporters: 96,
+    revenueModel: {
+      type: 'subscription',
+      estimatedROI: 12,
+      payoutFrequency: 'monthly'
+    }
   },
   {
     id: '3',
@@ -48,7 +58,12 @@ const projects: Project[] = [
     target: 12000,
     raised: 7200,
     daysLeft: 18,
-    supporters: 84
+    supporters: 84,
+    revenueModel: {
+      type: 'usage',
+      estimatedROI: 6,
+      payoutFrequency: 'annually'
+    }
   },
   {
     id: '5',
@@ -70,7 +85,12 @@ const projects: Project[] = [
     target: 18000,
     raised: 6300,
     daysLeft: 25,
-    supporters: 71
+    supporters: 71,
+    revenueModel: {
+      type: 'usage',
+      estimatedROI: 7.2,
+      payoutFrequency: 'quarterly'
+    }
   }
 ];
 
@@ -87,12 +107,15 @@ const categories = [
 const Explore = () => {
   const [selectedCategory, setSelectedCategory] = useState('All Categories');
   const [searchQuery, setSearchQuery] = useState('');
+  const [revenueOnly, setRevenueOnly] = useState(false);
   
   const filteredProjects = projects.filter(project => {
     const matchesCategory = selectedCategory === 'All Categories' || project.category === selectedCategory;
     const matchesSearch = project.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
                           project.description.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesCategory && matchesSearch;
+    const matchesRevenue = revenueOnly ? !!project.revenueModel : true;
+    
+    return matchesCategory && matchesSearch && matchesRevenue;
   });
 
   return (
@@ -121,7 +144,7 @@ const Explore = () => {
               />
             </div>
             
-            <div className="flex gap-3">
+            <div className="flex gap-3 flex-wrap">
               <div className="relative min-w-48">
                 <select
                   className="w-full h-12 px-4 pr-10 rounded-lg appearance-none border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
@@ -134,6 +157,14 @@ const Explore = () => {
                 </select>
                 <Filter className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" size={18} />
               </div>
+              
+              <button 
+                className={`h-12 px-4 rounded-lg border ${revenueOnly ? 'border-primary bg-primary/10 text-primary' : 'border-border bg-background'} flex items-center gap-2 hover:bg-muted transition-colors`}
+                onClick={() => setRevenueOnly(!revenueOnly)}
+              >
+                <DollarSign size={18} />
+                <span className="hidden sm:inline">Revenue-generating only</span>
+              </button>
               
               <button className="h-12 px-4 rounded-lg border border-border bg-background flex items-center gap-2 hover:bg-muted transition-colors">
                 <ArrowDownAZ size={18} />
